@@ -28,7 +28,7 @@ public class NoteController {
 
 	@GetMapping("/search")
 	public String search(@RequestParam("str") String param) {
-		List<Note> note = noteRepository.findByTitle(param);
+//		List<Note> note = noteRepository.findByTitle(param);
 		return "notes";
 	}
 }
