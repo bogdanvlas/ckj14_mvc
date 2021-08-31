@@ -66,5 +66,15 @@ public class PageController {
 		tokenRepository.save(token);
 		return "redirect:/login";
 	}
+	
+	@GetMapping("/confirm")
+	public String activateUser(@RequestParam String tokenValue) {
+		ConfirmationToken token =tokenRepository.findByValue(tokenValue);
+		User user = token.getUser();
+		user.setEnabled(true);
+		userRepository.save(user);
+		tokenRepository.delete(token);
+		return "redirect:/login";
+	}
 
 }
