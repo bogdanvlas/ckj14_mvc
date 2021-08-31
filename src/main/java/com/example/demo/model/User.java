@@ -34,6 +34,8 @@ public class User {
 
 	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
 	private List<Note> notes = new ArrayList<>();
+	
+	private boolean enabled;
 
 	public User(int id, String username, String password, String role, String email) {
 		this.id = id;
@@ -46,11 +48,21 @@ public class User {
 	public User() {
 	}
 
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
 	public void addNote(Note note) {
 		note.setUser(this);
 		this.notes.add(note);
 	}
 
+	
+	
 	public int getId() {
 		return id;
 	}
@@ -91,6 +103,7 @@ public class User {
 		this.role = role;
 	}
 
+	
 	public String getEmail() {
 		return email;
 	}
