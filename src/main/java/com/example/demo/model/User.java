@@ -35,17 +35,17 @@ public class User {
 	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
 	private List<Note> notes = new ArrayList<>();
 
-	public User(int id, String username, String password, String role, String email, List<Note> notes) {		this.id = id;
+	public User(int id, String username, String password, String role, String email) {
+		this.id = id;
 		this.username = username;
 		this.password = password;
 		this.role = role;
 		this.email = email;
-		this.notes = notes;
 	}
 
 	public User() {
 	}
-	
+
 	public void addNote(Note note) {
 		note.setUser(this);
 		this.notes.add(note);
