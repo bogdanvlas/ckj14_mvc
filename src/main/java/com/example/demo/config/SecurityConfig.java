@@ -16,11 +16,17 @@ import com.example.demo.service.MyUserDetaisService;
 import lombok.AllArgsConstructor;
 
 @EnableWebSecurity
-@AllArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	
 	private MyUserDetaisService userDetailsService;
 	
+	
+	public SecurityConfig(MyUserDetaisService userDetailsService) {
+		super();
+		this.userDetailsService = userDetailsService;
+	}
+
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()

@@ -11,21 +11,22 @@ import com.example.demo.repository.UserRepository;
 import lombok.AllArgsConstructor;
 
 @Service
-@AllArgsConstructor
 public class MyUserDetaisService implements UserDetailsService {
 	private UserRepository userRepository;
+
+	public MyUserDetaisService(UserRepository userRepository) {
+		super();
+		this.userRepository = userRepository;
+	}
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		User user = userRepository.findByUsername(username);
-		if(user==null) {
+		if (user == null) {
 			throw new UsernameNotFoundException(username);
 		}
 		UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
-				.username(user.getUsername())
-				.password(user.getPassword())
-				.roles(user.getRole())
-				.build();
+				.username(user.getUsername()).password(user.getPassword()).roles(user.getRole()).build();
 		return userDetails;
 	}
 
