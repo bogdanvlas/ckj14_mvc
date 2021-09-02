@@ -8,13 +8,22 @@
 	<h2>Sign up, please</h2>
 	<form action="/signup" method="post">
 		<div>
-			<input type="text" name="username" placeholder="Username">
+			<input type="text" name="username" 
+			placeholder="Username"
+			pattern="[a-zA-Z0-9_]+"
+			required="required">
 		</div>
 		<div>
-			<input type="password" name="password" placeholder="Password">
+			<input type="password" name="password" 
+			placeholder="Password"
+			pattern="[a-zA-Z0-9]{8,}"
+			required="required">
 		</div>
 		<div>
-			<input type="email" name="email" placeholder="Email">
+			<input type="email" name="email" 
+			placeholder="test123@mail.com"
+			pattern="^[a-zA-Z0-9]+@[a-zA-Z0-9]+.[a-zA-Z0-9]+$"
+			required="required">
 		</div>
 		<div>
 			<input type="submit" value="Sign Up">

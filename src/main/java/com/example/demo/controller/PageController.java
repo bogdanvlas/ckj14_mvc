@@ -47,7 +47,9 @@ public class PageController {
 	}
 
 	@PostMapping("/signup")
-	public String registerNewUser(@RequestParam String username, @RequestParam String password,
+	public String registerNewUser(
+			@RequestParam String username, 
+			@RequestParam String password,
 			@RequestParam String email) {
 		User user = userRepository.findByUsername(username);
 		if (user != null) {
