@@ -6,28 +6,28 @@
 </head>
 <body>
 	<h2>Sign up, please</h2>
-	<form action="/signup" method="post">
+	<form id="form" action="/signup" method="post">
 		<div>
-			<input type="text" name="username" 
-			placeholder="Username"
-			pattern="[a-zA-Z0-9_]+"
-			required="required">
+			<input type="text" name="username" placeholder="Username">
 		</div>
 		<div>
-			<input type="password" name="password" 
-			placeholder="Password"
-			pattern="[a-zA-Z0-9]{8,}"
-			required="required">
+			<input type="password" name="password" placeholder="Password"
+				pattern="" required="required">
 		</div>
 		<div>
-			<input type="email" name="email" 
-			placeholder="test123@mail.com"
-			pattern="^[a-zA-Z0-9]+@[a-zA-Z0-9]+.[a-zA-Z0-9]+$"
-			required="required">
+			<input type="password" name="confirmPassword"
+				placeholder="Confirm password" pattern="[a-zA-Z0-9]{8,}"
+				required="required">
 		</div>
 		<div>
-			<input type="submit" value="Sign Up">
+			<input type="email" name="email" placeholder="test123@mail.com"
+				pattern=""
+				required="required">
+		</div>
+		<div>
+			<button type="button" onclick="submitForm()">Sign Up Button</button>
 		</div>
 	</form>
 </body>
+<script type="text/javascript" src="/js/signup.js"></script>
 </html>
