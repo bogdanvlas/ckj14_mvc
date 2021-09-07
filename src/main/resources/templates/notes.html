@@ -6,24 +6,8 @@
 </head>
 <body>
 	<h2>Notes page</h2>
-	<div th:each="note : ${notes}">
-		<div th:text="${note.id}"></div>
-		<div th:text="${note.title}"></div>
-		<div th:text="${note.description}"></div>
-	</div>
-	<div>
-		<h3>Add note</h3>
-		<form action="/notes/create" method="post">
-			<div>
-				<input type="text" name="title">
-			</div>
-			<div>
-				<textarea name="description"></textarea>
-			</div>
-			<div>
-				<input type="submit" value="Create">
-			</div>
-		</form>
-	</div>
+	<script type="text/javascript" src="/js/notes.js">
+		
+	</script>
 </body>
 </html>

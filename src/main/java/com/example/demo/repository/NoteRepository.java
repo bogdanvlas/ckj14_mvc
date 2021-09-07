@@ -15,4 +15,6 @@ public interface NoteRepository extends CrudRepository<Note, Integer> {
 
 	@Query("SELECT n FROM Note n WHERE n.title LIKE :str OR n.description LIKE :str")
 	List<Note> search(@Param("str") String str);
+	
+	Note findByIdAndUserUsername(int id, String username);
 }

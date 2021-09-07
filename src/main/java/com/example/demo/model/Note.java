@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -25,6 +27,7 @@ public class Note {
 	private String title;
 	private String description;
 	@ManyToOne(fetch = FetchType.EAGER)
+	@JsonIgnore
 	private User user;
 
 	public Note(int id, String title, String description) {

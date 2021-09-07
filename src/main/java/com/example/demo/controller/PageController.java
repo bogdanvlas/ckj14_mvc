@@ -45,12 +45,18 @@ public class PageController {
 	public String signupPage() {
 		return "signup";
 	}
+	
+	@GetMapping("/notes")
+	public String notesPage() {
+		return "notes";
+	}
 
 	@PostMapping("/signup")
 	public String registerNewUser(
 			@RequestParam String username, 
 			@RequestParam String password,
-			@RequestParam String email) {
+			@RequestParam String email,
+			@RequestParam String url) {
 		User user = userRepository.findByUsername(username);
 		if (user != null) {
 			return "redirect:/signup?error=username_exists";
@@ -58,7 +64,8 @@ public class PageController {
 		user = new User(0, username, passwordEncoder.encode(password), "USER", email);
 		user = userRepository.save(user);
 		ConfirmationToken token = new ConfirmationToken(user);
-		String url = "http://localhost:8081/confirm?tokenValue=" + token.getValue();
+		url = url.replace("signup", "confirm");
+		url = url+"?tokenValue=" + token.getValue();
 		SimpleMailMessage mail = new SimpleMailMessage();
 		mail.setText("Visit this link for account activation: " + url);
 		mail.setTo(user.getEmail());

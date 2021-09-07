@@ -3,6 +3,7 @@ let f = document.getElementById("form")
 async function submitForm() {
 	if (await validateForm()) {
 		if (confirm("Complete registration?")) {
+			f.url.value = window.location.href
 			f.submit()
 		}
 	} else {
