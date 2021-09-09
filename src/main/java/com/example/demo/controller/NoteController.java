@@ -2,7 +2,11 @@ package com.example.demo.controller;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
+import org.springframework.hateoas.EntityModel;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,29 +33,43 @@ public class NoteController {
 		this.userRepository = userRepository;
 	}
 
+	public static Function<Note, EntityModel<Note>> getMapper(Principal prl) {
+		Function<Note, EntityModel<Note>> mapper = n -> {
+			return EntityModel.of(n, linkTo(methodOn(NoteController.class).getNote(n.getId(), prl)).withRel("get"),
+					linkTo(methodOn(NoteController.class).changeNote(n, prl)).withRel("put"),
+					linkTo(methodOn(NoteController.class).deleteNote(n.getId(), prl)).withRel("delete"));
+		};
+		return mapper;
+	}
+
 	// получение всех - GET
 	@GetMapping("/all")
-	public List<Note> getAllNotes(Principal prl) {
+	public List<EntityModel<Note>> getAllNotes(Principal prl) {
 		User user = userRepository.findByUsername(prl.getName());
-		return user.getNotes();
+		
+		return user.getNotes().stream()
+				.map(getMapper(prl)).collect(Collectors.toList());
 	}
 
 	// получение одной - GET
 	@GetMapping("/one/{id}")
-	public Note getNote(@PathVariable int id, Principal prl) {
+	public EntityModel<Note> getNote(@PathVariable int id, Principal prl) {
 		String username = prl.getName();
 		Note note = noteRepository.findByIdAndUserUsername(id, username);
-		return note;
+		EntityModel<Note> result = EntityModel.of(note,
+				linkTo(methodOn(NoteController.class).getAllNotes(prl)).withRel("notes"),
+				linkTo(methodOn(NoteController.class).deleteNote(note.getId(), prl)).withRel("delete"));
+		return result;
 	}
 
 	// создание - POST
 	@PostMapping("/create")
-	public Note createNote(@RequestBody Note note, Principal prl) {
+	public EntityModel<Note> createNote(@RequestBody Note note, Principal prl) {
 		User user = userRepository.findByUsername(prl.getName());
 		user.addNote(note);
 		note = noteRepository.save(note);
 		userRepository.save(user);
-		return note;
+		return getMapper(prl).apply(note);
 	}
 
 	// редактирование - PUT
@@ -69,10 +87,13 @@ public class NoteController {
 
 	// удаление - DELETE
 	@DeleteMapping("/delete/{id}")
-	public void deleteNote(@PathVariable int id, Principal prl) {
+	public Note deleteNote(@PathVariable int id, Principal prl) {
 		Note note = noteRepository.findByIdAndUserUsername(id, prl.getName());
-		if(note!=null) {
+		if (note != null) {
 			noteRepository.delete(note);
+			return note;
 		}
+		return null;
 	}
+
 }

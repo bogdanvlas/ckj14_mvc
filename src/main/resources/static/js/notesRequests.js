@@ -1,7 +1,9 @@
 async function getAll() {
 	let response = await fetch("/notes/all")
-	let notes = await response.json()
-	console.log(notes)
+	if (response.status == 200) {
+		let notes = await response.json()
+		return notes
+	}
 }
 
 async function getOne(id) {
@@ -10,10 +12,7 @@ async function getOne(id) {
 	console.log(note)
 }
 
-async function postNote() {
-	let title = prompt("Enter title:")
-	let description = prompt("Enter description:")
-	let note = { title: title, description: description }
+async function postNote(note) {
 	let jsonString = JSON.stringify(note)
 	let response = await fetch("/notes/create", {
 		method: "POST",
@@ -22,8 +21,11 @@ async function postNote() {
 		},
 		body: jsonString
 	})
-	note = await response.json()
-	console.log(note)
+	if (response.status == 200) {
+		note = await response.json()
+		return note
+	}
+	return false
 }
 
 
@@ -31,7 +33,7 @@ async function putNote() {
 	let id = prompt("Enter id:")
 	let title = prompt("Enter title:")
 	let description = prompt("Enter description:")
-	let note = { id:id, title: title, description: description }
+	let note = { id: id, title: title, description: description }
 	let jsonString = JSON.stringify(note)
 	let response = await fetch("/notes/change", {
 		method: "PUT",
@@ -44,9 +46,10 @@ async function putNote() {
 	console.log(note)
 }
 
-async function deleteNote(){
-	let id = prompt("Enter id for delete")
-	await fetch("/notes/delete/"+id,{
-		method:"DELETE"
+async function deleteNote(note) {
+	let url = note.links[2].href
+	await fetch(url, {
+		method: "DELETE"
 	})
 }
+
