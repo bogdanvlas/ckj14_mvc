@@ -1,6 +1,7 @@
 package com.example.demo.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -16,5 +17,5 @@ public interface NoteRepository extends CrudRepository<Note, Integer> {
 	@Query("SELECT n FROM Note n WHERE n.title LIKE :str OR n.description LIKE :str")
 	List<Note> search(@Param("str") String str);
 	
-	Note findByIdAndUserUsername(int id, String username);
+	Optional<Note> findByIdAndUserUsername(int id, String username);
 }

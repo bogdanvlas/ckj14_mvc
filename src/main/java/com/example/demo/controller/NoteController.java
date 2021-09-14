@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.exceptions.NoSuchNoteException;
 import com.example.demo.model.Note;
 import com.example.demo.model.User;
 import com.example.demo.repository.NoteRepository;
@@ -46,16 +47,16 @@ public class NoteController {
 	@GetMapping("/all")
 	public List<EntityModel<Note>> getAllNotes(Principal prl) {
 		User user = userRepository.findByUsername(prl.getName());
-		
-		return user.getNotes().stream()
-				.map(getMapper(prl)).collect(Collectors.toList());
+
+		return user.getNotes().stream().map(getMapper(prl)).collect(Collectors.toList());
 	}
 
 	// получение одной - GET
 	@GetMapping("/one/{id}")
 	public EntityModel<Note> getNote(@PathVariable int id, Principal prl) {
 		String username = prl.getName();
-		Note note = noteRepository.findByIdAndUserUsername(id, username);
+		Note note = noteRepository.findByIdAndUserUsername(id, username)
+				.orElseThrow(() -> new NoSuchNoteException(id));
 		EntityModel<Note> result = EntityModel.of(note,
 				linkTo(methodOn(NoteController.class).getAllNotes(prl)).withRel("notes"),
 				linkTo(methodOn(NoteController.class).deleteNote(note.getId(), prl)).withRel("delete"));
@@ -76,24 +77,21 @@ public class NoteController {
 	@PutMapping("/change")
 	public Note changeNote(@RequestBody Note newNote, Principal prl) {
 		String username = prl.getName();
-		Note oldNote = noteRepository.findByIdAndUserUsername(newNote.getId(), username);
-		if (oldNote != null) {
-			oldNote.setTitle(newNote.getTitle());
-			oldNote.setDescription(newNote.getDescription());
-			return noteRepository.save(oldNote);
-		}
-		return null;
+		Note oldNote = noteRepository.findByIdAndUserUsername(newNote.getId(), username)
+				.orElseThrow(() -> new NoSuchNoteException(newNote.getId()));
+
+		oldNote.setTitle(newNote.getTitle());
+		oldNote.setDescription(newNote.getDescription());
+		return noteRepository.save(oldNote);
 	}
 
 	// удаление - DELETE
 	@DeleteMapping("/delete/{id}")
 	public Note deleteNote(@PathVariable int id, Principal prl) {
-		Note note = noteRepository.findByIdAndUserUsername(id, prl.getName());
-		if (note != null) {
+		Note note = noteRepository.findByIdAndUserUsername(id, prl.getName())
+				.orElseThrow(()->new NoSuchNoteException(id));
 			noteRepository.delete(note);
 			return note;
-		}
-		return null;
 	}
 
 }
